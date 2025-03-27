@@ -1,7 +1,7 @@
-import { Navbar } from '../../../Components/layout/user/Navbar';
-import { Sidebar } from '../../../Components/layout/user/Sidebar';
-import { MyInsurances } from '../../../components/dashboard/MyInsurances';
-import { AvailableInsurances } from '../../../components/dashboard/AvailableInsurances';
+import { Navbar } from '../../Components/user/Navbar';
+import { Sidebar } from '../../Components/user/Sidebar';
+import { MyInsurances } from '../../components/dashboard/MyInsurances';
+import { AvailableInsurances } from '../../components/dashboard/AvailableInsurances';
 
 export default function UserHomePage() {
     return (
