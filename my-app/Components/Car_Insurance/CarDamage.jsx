@@ -1,143 +1,121 @@
-"use client";
+import React, { useState, useEffect } from "react";
 
-import { useRef, useState, useEffect } from "react";
+const CarUploadForm = () => {
+  const [carBrand, setCarBrand] = useState("");
+  const [carModel, setCarModel] = useState("");
+  const [files, setFiles] = useState([]);
 
-export default function CarDamageDetection({ onDetect }) {
-    const fileInputRef = useRef(null);
-    const [files, setFiles] = useState([]);
-    const [imagePreviews, setImagePreviews] = useState([]);
-    const [userId, setUserId] = useState(null);
-    const [token, setToken] = useState(null);
-    const [carBrand, setCarBrand] = useState("");
-    const [carModel, setCarModel] = useState("");
-    const [loading, setLoading] = useState(false);
+  const userId = localStorage.getItem("_id") || "";
+  const token = localStorage.getItem("token") || "";
 
-    // Fetch user ID and token from localStorage when the component mounts
-    useEffect(() => {
-        const storedUserId = localStorage.getItem("userId");
-        const storedToken = localStorage.getItem("token");
-        if (storedUserId) setUserId(storedUserId);
-        if (storedToken) setToken(storedToken);
-    }, []);
+  useEffect(() => {
+    console.log("Files Updated:", files);
+  }, [files]);
 
-    const handleImageUpload = (event) => {
-        const selectedFiles = Array.from(event.target.files);
-        setFiles(selectedFiles);
+  if (!userId || !token) {
+    console.log("User is not authenticated.");
+  }
 
-        // Show image previews
-        const previews = selectedFiles.map((file) => URL.createObjectURL(file));
-        setImagePreviews(previews);
-    };
+  const handleFileChange = (event) => {
+    const selectedFiles = Array.from(event.target.files);
+    if (selectedFiles.length > 0) {
+      setFiles(selectedFiles);
+    } else {
+      setFiles([]);
+    }
+    console.log("Files Selected:", selectedFiles);
+  };
 
-    const removeImage = (index) => {
-        setFiles((prev) => prev.filter((_, i) => i !== index));
-        setImagePreviews((prev) => prev.filter((_, i) => i !== index));
-    };
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    console.log("User ID:", userId);
+    console.log("Car Brand:", carBrand.trim());
+    console.log("Car Model:", carModel.trim());
+    console.log("Files:", files);
 
-    const uploadImages = async () => {
-        if (files.length === 0) {
-            alert("Please upload at least one image.");
-            return null;
-        }
+    if (!userId || carBrand.trim() === "" || carModel.trim() === "" || files.length === 0) {
+      alert("Please fill in all details.");
+      return;
+    }
 
-        setLoading(true);
+    const formData = new FormData();
+    formData.append("userId", userId);
+    formData.append("carBrand", carBrand);
+    formData.append("carModel", carModel);
+    
+    files.forEach((file) => formData.append("images", file));
 
-        try {
-            const formData = new FormData();
-            files.forEach((file) => formData.append("files", file));
+    try {
+      const response = await fetch("http://localhost:3001/api/damage-analysis/analyze", {
+        method: "POST",
+        body: formData,
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+      });
 
-            const uploadResponse = await fetch("http://localhost:3001/api/uploadImages", {
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${token}`, // Send token for authentication
-                },
-                body: formData,
-            });
+      const result = await response.json();
+      console.log("Car Analysis Response:", result);
 
-            const uploadResult = await uploadResponse.json();
-            if (!uploadResponse.ok) {
-                throw new Error(uploadResult.error || "Failed to upload images");
-            }
+      if (response.ok) {
+        alert("Car analyzed successfully!");
+      } else {
+        alert(result.message || "Failed to analyze car.");
+      }
+    } catch (error) {
+      console.error("Error submitting car details:", error);
+      alert("Something went wrong!");
+    }
+  };
 
-            return uploadResult.imagePaths; // Return uploaded image paths for analysis
-        } catch (error) {
-            alert(`Error uploading images: ${error.message}`);
-            setLoading(false);
-            return null;
-        }
-    };
+  return (
+    <div style={{
+      maxWidth: "400px",
+      margin: "auto",
+      padding: "20px",
+      border: "1px solid #ccc",
+      borderRadius: "8px",
+      boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
+      textAlign: "center"
+    }}>
+      <h2>Analyze Your Car</h2>
+      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column" }}>
+        <input
+          type="text"
+          placeholder="Car Brand"
+          value={carBrand}
+          onChange={(e) => setCarBrand(e.target.value)}
+          style={{ padding: "10px", margin: "10px 0", borderRadius: "4px", border: "1px solid #ccc" }}
+        />
+        <input
+          type="text"
+          placeholder="Car Model"
+          value={carModel}
+          onChange={(e) => setCarModel(e.target.value)}
+          style={{ padding: "10px", margin: "10px 0", borderRadius: "4px", border: "1px solid #ccc" }}
+        />
+        <input
+          type="file"
+          multiple
+          onChange={handleFileChange}
+          style={{ margin: "10px 0" }}
+        />
+        <button
+          type="submit"
+          style={{
+            padding: "10px",
+            backgroundColor: "#007bff",
+            color: "#fff",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer"
+          }}
+        >
+          Analyze Car
+        </button>
+      </form>
+    </div>
+  );
+};
 
-    const analyzeImages = async (uploadedImages) => {
-        try {
-            const analysisResponse = await fetch("http://localhost:3001/api/analyzeImages", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`, // Include token in request
-                },
-                body: JSON.stringify({
-                    userId,
-                    carBrand,
-                    carModel,
-                    images: uploadedImages,
-                }),
-            });
-
-            const analysisResult = await analysisResponse.json();
-            if (!analysisResponse.ok) {
-                throw new Error(analysisResult.error || "Failed to analyze images");
-            }
-
-            onDetect(analysisResult); // Pass results to parent component
-        } catch (error) {
-            alert(`Error analyzing images: ${error.message}`);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const detectDamage = async () => {
-        if (!userId || !carBrand || !carModel) {
-            alert("Please fill in all details.");
-            return;
-        }
-
-        const uploadedImages = await uploadImages();
-        if (uploadedImages) {
-            await analyzeImages(uploadedImages);
-        }
-    };
-
-    return (
-        <div className="flex flex-col items-center bg-white p-6 shadow-lg rounded-lg border w-full">
-            <h2 className="text-xl font-bold mb-4">Upload Car Images</h2>
-
-            <input type="file" accept="image/*" multiple className="hidden" ref={fileInputRef} onChange={handleImageUpload} />
-            <button onClick={() => fileInputRef.current.click()} className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700">
-                Select Images
-            </button>
-
-            {/* User Input Fields */}
-            <div className="mt-4 w-full">
-                <input type="text" placeholder="Car Brand" value={carBrand} onChange={(e) => setCarBrand(e.target.value)} className="w-full p-2 border rounded mb-2" />
-                <input type="text" placeholder="Car Model" value={carModel} onChange={(e) => setCarModel(e.target.value)} className="w-full p-2 border rounded mb-2" />
-            </div>
-
-            {/* Image Previews */}
-            <div className="flex flex-wrap gap-4 mt-4">
-                {imagePreviews.map((src, index) => (
-                    <div key={index} className="relative">
-                        <img src={src} alt={`Car ${index}`} className="w-32 h-32 object-cover rounded-lg border" />
-                        <button onClick={() => removeImage(index)} className="absolute top-0 right-0 bg-red-500 text-white px-2 rounded-full">
-                            ✕
-                        </button>
-                    </div>
-                ))}
-            </div>
-
-            <button onClick={detectDamage} className="mt-4 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 disabled:bg-gray-400" disabled={loading}>
-                {loading ? "Detecting..." : "Detect Damage"}
-            </button>
-        </div>
-    );
-}
+export default CarUploadForm;
