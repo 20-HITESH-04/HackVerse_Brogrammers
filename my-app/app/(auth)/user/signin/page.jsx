@@ -8,6 +8,25 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
+
+const router = useRouter();
+
+const handleSignin = async (e) => {
+  e.preventDefault();
+  setError('');
+  try {
+    const response = await axios.post('http://localhost:5000/api/user/login', formData);
+    console.log('User Signin Success:', response.data);
+
+    // Redirect to admin home on successful login
+    router.push('/user/home');
+  } catch (err) {
+    console.error('Signin Error:', err.response?.data || err.message);
+    setError(err.response?.data?.message || 'Signin failed. Please try again.');
+  }
+};
+
 
 export default function UserSignin() {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -16,19 +35,6 @@ export default function UserSignin() {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({ ...prevState, [name]: value }));
-  };
-
-  const handleSignin = async (e) => {
-    e.preventDefault();
-    setError('');
-    try {
-      const response = await axios.post('/api/user/login', formData);
-      console.log('User Signin Success:', response.data);
-      // Handle success (e.g., store token, redirect)
-    } catch (err) {
-      console.error('Signin Error:', err.response?.data || err.message);
-      setError(err.response?.data?.message || 'Signin failed. Please try again.');
-    }
   };
 
   return (

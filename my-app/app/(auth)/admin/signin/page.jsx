@@ -9,7 +9,10 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import axios from 'axios';
 
+import { useRouter } from 'next/navigation';
+
 export default function AdminSignin() {
+  const router = useRouter();
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
 
@@ -22,9 +25,11 @@ export default function AdminSignin() {
     e.preventDefault();
     setError('');
     try {
-      const response = await axios.post('/api/admin/login', formData);
+      const response = await axios.post('http://localhost:5000/api/admin/login', formData);
       console.log('Admin Signin Success:', response.data);
       // Handle success (e.g., store token, redirect)
+         // Redirect to admin home on successful login
+    router.push('/admin/home');
     } catch (err) {
       console.error('Signin Error:', err.response?.data || err.message);
       setError(err.response?.data?.message || 'Signin failed. Please try again.');

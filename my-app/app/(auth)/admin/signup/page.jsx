@@ -9,6 +9,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+import { useRouter } from 'next/navigation';
+
+const router = useRouter();
+
 export default function AdminSignup() {
   const [formData, setFormData] = useState({
     fullName: '',
@@ -37,7 +41,7 @@ export default function AdminSignup() {
     }
 
     try {
-      const response = await axios.post('/api/admin/register', {
+      const response = await axios.post('http://localhost:5000/api/admin/register', {
         fullName: formData.fullName,
         email: formData.email,
         password: formData.password,
@@ -45,6 +49,9 @@ export default function AdminSignup() {
 
       console.log('Admin Signup Success:', response.data);
       alert('Signup successful! Please log in.');
+
+         // Redirect to admin home on successful login
+    router.push('/admin/home');
     } catch (error) {
       console.error('Signup Error:', error.response?.data || error.message);
       alert(error.response?.data?.message || 'Signup failed. Please try again.');
