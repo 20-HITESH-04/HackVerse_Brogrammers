@@ -28,8 +28,8 @@ export default function AdminSignin() {
       const response = await axios.post('http://localhost:5000/api/admin/login', formData);
       console.log('Admin Signin Success:', response.data);
       // Handle success (e.g., store token, redirect)
-         // Redirect to admin home on successful login
-    router.push('/admin/home');
+      // Redirect to admin home on successful login
+      router.push('/admin/home');
     } catch (err) {
       console.error('Signin Error:', err.response?.data || err.message);
       setError(err.response?.data?.message || 'Signin failed. Please try again.');

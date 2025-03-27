@@ -50,8 +50,8 @@ export default function AdminSignup() {
       console.log('Admin Signup Success:', response.data);
       alert('Signup successful! Please log in.');
 
-         // Redirect to admin home on successful login
-    router.push('/admin/home');
+      // Redirect to admin home on successful login
+      router.push('/admin/home');
     } catch (error) {
       console.error('Signup Error:', error.response?.data || error.message);
       alert(error.response?.data?.message || 'Signup failed. Please try again.');
