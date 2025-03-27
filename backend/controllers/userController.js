@@ -12,7 +12,7 @@ const generateToken = (id) => {
 // @route   POST /api/auth/register
 exports.registerUser = async (req, res) => {
     try {
-        const { fullName, email, password } = req.body;
+        const { fullName, email, password, signature, photo } = req.body;
 
         // Check if user already exists
         const userExists = await User.findOne({ email });
@@ -24,7 +24,9 @@ exports.registerUser = async (req, res) => {
         const user = await User.create({
             fullName,
             email,
-            password
+            password,
+            signature,
+            photo
         });
 
         // Generate token
