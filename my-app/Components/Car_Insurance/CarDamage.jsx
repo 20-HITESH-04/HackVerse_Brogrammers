@@ -1,62 +1,58 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 
 const CarUploadForm = () => {
   const [carBrand, setCarBrand] = useState("");
   const [carModel, setCarModel] = useState("");
   const [files, setFiles] = useState([]);
-
-  const userId = localStorage.getItem("_id") || "";
-  const token = localStorage.getItem("token") || "";
+  const [userId, setUserId] = useState("");
+  const [token, setToken] = useState("");
 
   useEffect(() => {
-    console.log("Files Updated:", files);
-  }, [files]);
-
-  if (!userId || !token) {
-    console.log("User is not authenticated.");
-  }
+    if (typeof window !== 'undefined') {
+      const storedUserId = localStorage.getItem("_id") || "";
+      const storedToken = localStorage.getItem("token") || "";
+      
+      setUserId(storedUserId);
+      setToken(storedToken);
+    }
+  }, []);
 
   const handleFileChange = (event) => {
     const selectedFiles = Array.from(event.target.files);
-    if (selectedFiles.length > 0) {
-      setFiles(selectedFiles);
-    } else {
-      setFiles([]);
-    }
-    console.log("Files Selected:", selectedFiles);
+    setFiles(selectedFiles);
   };
-
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log("User ID:", userId);
-    console.log("Car Brand:", carBrand.trim());
-    console.log("Car Model:", carModel.trim());
-    console.log("Files:", files);
-
-    if (!userId || carBrand.trim() === "" || carModel.trim() === "" || files.length === 0) {
+  
+    if (!userId || !carBrand.trim() || !carModel.trim() || files.length === 0) {
       alert("Please fill in all details.");
       return;
     }
-
+  
     const formData = new FormData();
     formData.append("userId", userId);
     formData.append("carBrand", carBrand);
     formData.append("carModel", carModel);
     
-    files.forEach((file) => formData.append("images", file));
-
+    files.forEach((file, index) => {
+      formData.append("images", file);  // Note: changed from 'image' to 'images'
+    });
+  
     try {
       const response = await fetch("http://localhost:3001/api/damage-analysis/analyze", {
         method: "POST",
         body: formData,
         headers: {
-            Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
-
+  
       const result = await response.json();
       console.log("Car Analysis Response:", result);
-
+  
       if (response.ok) {
         alert("Car analyzed successfully!");
       } else {
@@ -67,7 +63,7 @@ const CarUploadForm = () => {
       alert("Something went wrong!");
     }
   };
-
+  
   return (
     <div style={{
       maxWidth: "400px",
