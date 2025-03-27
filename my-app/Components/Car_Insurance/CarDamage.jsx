@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 
 const CarUploadForm = () => {
-  const [carBrand, setCarBrand] = useState("");
+  const [carBrand, setCarBrand] = useState(""); 
   const [carModel, setCarModel] = useState("");
   const [files, setFiles] = useState([]);
   const [userId, setUserId] = useState("");

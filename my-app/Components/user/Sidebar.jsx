@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { Home, FileText, MessageSquare } from 'lucide-react';
 
 const SIDEBAR_ITEMS = [
-    { name: 'Dashboard', icon: Home, href: '/user/home' },
+    { name: 'Dashboard', icon: Home, href: '/user' },
     { name: 'Claims', icon: FileText, href: '/user/claims' },
     { name: 'AI Chatbot', icon: MessageSquare, href: '/user/chatbot' }
 ];
