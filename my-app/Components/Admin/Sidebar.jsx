@@ -22,7 +22,7 @@ const SIDEBAR_ITEMS = [
     {
         icon: UserPlus,
         text: 'Add User',
-        href: '/admin/adduser'
+        href: '/admin/addUser'
     },
 
 
