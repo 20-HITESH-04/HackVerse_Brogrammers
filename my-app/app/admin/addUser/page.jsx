@@ -1,5 +1,5 @@
-import Sidebar from "../../components/Admin/Sidebar";
-import Navbar from "../../components/Admin/Navbar";
+import Navbar from "@/Components/Admin/Navbar";
+import Sidebar from "@/Components/Admin/Sidebar";
 
 const AddUser = () => {
   return (

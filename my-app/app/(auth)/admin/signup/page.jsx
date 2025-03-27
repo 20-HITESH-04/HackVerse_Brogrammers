@@ -11,9 +11,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { useRouter } from 'next/navigation';
 
-const router = useRouter();
 
 export default function AdminSignup() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
