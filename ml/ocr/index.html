@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OCR Image Text Extractor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .upload-section {
+            margin-bottom: 20px;
+            padding: 20px;
+            border: 2px dashed #ccc;
+            text-align: center;
+        }
+        .results-section {
+            margin-top: 20px;
+        }
+        .extracted-text {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>OCR Image Text Extractor</h1>
+    
+    <div class="upload-section">
+        <form method="POST" enctype="multipart/form-data">
+            <input type="file" name="image" accept="image/*" required>
+            <input type="submit" value="Extract Text">
+        </form>
+    </div>
+
+    {% if error %}
+    <div class="error">
+        <p>{{ error }}</p>
+    </div>
+    {% endif %}
+
+    {% if extracted_text %}
+    <div class="results-section">
+        <h2>Extracted Text</h2>
+        <div class="extracted-text">
+            {% for text in extracted_text %}
+                <p>{{ text }}</p>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if image_base64 %}
+    <div class="results-section">
+        <h2>OCR Visualization</h2>
+        <img src="data:image/png;base64,{{ image_base64 }}" alt="OCR Visualization">
+    </div>
+    {% endif %}
+</body>
+</html>
