@@ -27,11 +27,12 @@ export default function UserSignin() {
       const response = await axios.post('http://localhost:3001/api/user/login', formData);
       console.log('User Signin Success:', response.data);
 
-      // Store user data (e.g., token, ID) in local storage or state
-      localStorage.setItem('user', JSON.stringify(response.data));
+      localStorage.setItem("_id", response.data._id);
+      localStorage.setItem("token", response.data.token);
+      
 
       // Redirect to user home on successful login
-      router.push('/user/home');
+      router.push('/user');
     } catch (err) {
       console.error('Signin Error:', err.response?.data || err.message);
       setError(err.response?.data?.message || 'Signin failed. Please try again.');
