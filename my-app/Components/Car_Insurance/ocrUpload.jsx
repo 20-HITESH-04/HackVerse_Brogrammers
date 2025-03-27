@@ -9,37 +9,50 @@ export default function OcrUpload({ onVerify }) {
     const [error, setError] = useState("");
 
     const { getRootProps, getInputProps } = useDropzone({
-        accept: "application/pdf",
+        accept: "image/jpeg, image/png",
         onDrop: (acceptedFiles) => {
+            if (acceptedFiles.length === 0) {
+                setError("Invalid file type. Please upload a valid image.");
+                return;
+            }
+
             setFile(acceptedFiles[0]);
-            setError(""); // Reset error when a new file is uploaded
+            setError(""); // Reset error when a valid file is uploaded
+            console.log("File selected:", acceptedFiles[0]); // ✅ Debugging
         },
     });
 
     const handleProceed = async () => {
-        if (!file) return;
+        if (!file) {
+            alert("Please upload an image before proceeding.");
+            return;
+        }
 
         setIsLoading(true);
         setError("");
 
-        try {
-            const formData = new FormData();
-            formData.append("file", file);
+        const formData = new FormData();
+        formData.append("image", file); // ✅ Sending as 'image' instead of 'file'
 
-            const response = await fetch("/api/ocr-verification", {
+        console.log("Sending image to backend:", file.name); // ✅ Debugging
+
+        try {
+            const response = await fetch("http://localhost:3001/api/ocr/process", { // ✅ Corrected API URL
                 method: "POST",
                 body: formData,
             });
 
             const result = await response.json();
-            result.status = "Yes" ;
+            console.log("OCR API Response:", result); // ✅ Debugging API Response
 
-            if (result.status === "Yes") {
+            if (result.valid) { // ✅ Correct condition
+                alert(`✅ Document Verified: ${result.message}`);
                 onVerify(); // ✅ Trigger next step
             } else {
-                setError("The uploaded document is not original. Please try again.");
+                setError(`❌ Document Not Valid: ${result.message}`);
             }
         } catch (error) {
+            console.error("OCR API Error:", error);
             setError("Error verifying the document. Please try again.");
         } finally {
             setIsLoading(false);
@@ -57,7 +70,7 @@ export default function OcrUpload({ onVerify }) {
             >
                 <input {...getInputProps()} />
                 <p className="text-gray-600 text-lg font-medium">
-                    Drag & drop your insurance PDF here, or click to select
+                    Drag & drop your insurance document here, or click to select
                 </p>
             </div>
 

@@ -1,43 +1,22 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 
-export default function SignatureCapture({ onSave }) {
-    const canvasRef = useRef(null);
-    const [isDrawing, setIsDrawing] = useState(false);
-    const [penColor, setPenColor] = useState("#000000"); // Default black
-    const [penSize, setPenSize] = useState(2); // Default size
-    const [saving, setSaving] = useState(false); // Loading state
+export default function SignatureUpload({ onSave }) {
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [saving, setSaving] = useState(false);
 
-    const startDrawing = (e) => {
-        const canvas = canvasRef.current;
-        const ctx = canvas.getContext("2d");
-
-        ctx.strokeStyle = penColor; // Set pen color
-        ctx.lineWidth = penSize; // Set pen size
-        ctx.lineCap = "round";
-        ctx.beginPath();
-        ctx.moveTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
-        setIsDrawing(true);
+    const handleFileChange = (e) => {
+        setSelectedFile(e.target.files[0]);
     };
 
-    const draw = (e) => {
-        if (!isDrawing) return;
-        const canvas = canvasRef.current;
-        const ctx = canvas.getContext("2d");
-
-        ctx.lineTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
-        ctx.stroke();
-    };
-
-    const stopDrawing = () => {
-        setIsDrawing(false);
-    };
-
-    const saveSignature = async () => {
+    const uploadSignature = async () => {
+        if (!selectedFile) {
+            alert("Please select a signature image to upload.");
+            return;
+        }
+        
         setSaving(true);
-        const canvas = canvasRef.current;
-        const signatureBlob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
         const userId = localStorage.getItem("_id");
         
         if (!userId) {
@@ -47,88 +26,52 @@ export default function SignatureCapture({ onSave }) {
         }
         
         const formData = new FormData();
-        formData.append("image", signatureBlob, "signature.png");
+        formData.append("image", selectedFile);
         formData.append("userId", userId);
 
+        console.log("Sending data to backend:", [...formData.entries()]);
+        
         try {
-            const response = await fetch("http://localhost:3001/api/signature/verify", {
+            const response = await fetch("http://localhost:3001/api/signature/verify", { // ✅ Corrected API URL
                 method: "POST",
                 body: formData,
             });
-
+            
             const result = await response.json();
+            console.log("API Response:", result); // ✅ Debugging response
 
-            if (result.status === "Yes") {
+            if (result.match) { // ✅ Correct condition
                 onSave();
-                alert("Signature verified successfully!");
+                alert(`✅ Success: ${result.message} (Score: ${result.similarity_score})`);
             } else {
-                alert("Signature verification failed. Try again!");
+                alert(`❌ Failed: ${result.message} (Score: ${result.similarity_score})`);
             }
         } catch (error) {
+            console.error("Error:", error);
             alert("Error verifying the signature. Please try again.");
         } finally {
             setSaving(false);
         }
     };
 
-    const clearCanvas = () => {
-        const canvas = canvasRef.current;
-        const ctx = canvas.getContext("2d");
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-    };
-
     return (
         <div className="flex flex-col items-center bg-white p-6 shadow-lg rounded-lg border w-full">
-            <h2 className="text-xl font-bold mb-4">Sign Below</h2>
-
-            {/* Canvas for Signature */}
-            <canvas
-                ref={canvasRef}
-                className="border rounded-lg w-full h-40 bg-gray-100 cursor-crosshair"
-                onMouseDown={startDrawing}
-                onMouseMove={draw}
-                onMouseUp={stopDrawing}
-                onMouseOut={stopDrawing}
+            <h2 className="text-xl font-bold mb-4">Upload Your Signature</h2>
+            
+            <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="mb-4"
             />
-
-            {/* Pen Options */}
-            <div className="flex gap-4 mt-4">
-                <label className="flex items-center gap-2">
-                    <span>Pen Color:</span>
-                    <input
-                        type="color"
-                        value={penColor}
-                        onChange={(e) => setPenColor(e.target.value)}
-                    />
-                </label>
-
-                <label className="flex items-center gap-2">
-                    <span>Pen Size:</span>
-                    <input
-                        type="range"
-                        min="1"
-                        max="5"
-                        value={penSize}
-                        onChange={(e) => setPenSize(e.target.value)}
-                    />
-                </label>
-            </div>
-
-            {/* Buttons */}
+            
             <div className="flex gap-4 mt-4">
                 <button
-                    onClick={saveSignature}
+                    onClick={uploadSignature}
                     className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
                     disabled={saving}
                 >
-                    {saving ? "Saving..." : "Save Signature"}
-                </button>
-
-                <button
-                    onClick={clearCanvas}
-                    className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700"
-                >
-                    Clear
+                    {saving ? "Uploading..." : "Upload Signature"}
                 </button>
             </div>
         </div>
