@@ -8,10 +8,41 @@ const ChatPage = () => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
 
-  const handleSendMessage = () => {
-    if (message.trim()) {
-      setMessages([...messages, { text: message, sender: "user", timestamp: new Date() }]);
-      setMessage("");
+  const handleSendMessage = async () => {
+    if (!message.trim()) return;
+
+    const newMessage = { text: message, sender: "user", timestamp: new Date().toLocaleString() };
+    setMessages([...messages, newMessage]);
+    setMessage("");
+
+    try {
+      const response = await fetch("http://localhost:5000/ask", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ question: message }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { text: data.answer || "Sorry, I could not find an answer.", sender: "bot", timestamp: new Date().toLocaleString() },
+        ]);
+      } else {
+        console.error("API error:", data.error);
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { text: "Error fetching response.", sender: "bot", timestamp: new Date().toLocaleString() },
+        ]);
+      }
+    } catch (error) {
+      console.error("Request failed:", error);
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { text: "Request failed. Please try again.", sender: "bot", timestamp: new Date().toLocaleString() },
+      ]);
     }
   };
 
@@ -27,21 +58,18 @@ const ChatPage = () => {
               Enter how you are feeling? Describe symptoms in detail for accurate help.
             </div>
             {messages.map((msg, index) => (
-              <div
-                key={index}
-                className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
-              >
-                <div className="max-w-xs md:max-w-sm bg-blue-200 p-3 rounded-lg shadow-md">
-                  <p className="text-blue-900">{msg.text}</p>
-                  <p className="text-xs text-right text-blue-600 mt-1">
-                    {msg.timestamp.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+              <div key={index} className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}>
+                <div className={`max-w-xs md:max-w-sm p-3 rounded-lg shadow-md ${msg.sender === "user" ? "bg-blue-200" : "bg-gray-200"}`}>
+                  <p className="text-gray-900">{msg.text}</p>
+                  <p className="text-xs text-right text-gray-600 mt-1">
+                    {msg.timestamp}
                   </p>
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Message Input Area - Fixed to Bottom */}
+          {/* Message Input Area */}
           <div className="sticky bottom-0 bg-blue-100 p-4 flex items-center space-x-3 border-t border-blue-200">
             <button className="text-blue-600 hover:text-blue-800">
               <Paperclip size={24} />
