@@ -37,19 +37,29 @@ export default function SignatureCapture({ onSave }) {
     const saveSignature = async () => {
         setSaving(true);
         const canvas = canvasRef.current;
-        const signatureData = canvas.toDataURL("image/png"); // Convert to base64
+        const signatureBlob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
+        const userId = localStorage.getItem("_id");
+        
+        if (!userId) {
+            alert("User ID not found");
+            setSaving(false);
+            return;
+        }
+        
+        const formData = new FormData();
+        formData.append("image", signatureBlob, "signature.png");
+        formData.append("userId", userId);
 
         try {
-            const response = await fetch("/api/signature-verification", {
+            const response = await fetch("http://localhost:3001/api/signature/verify", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ signature: signatureData }), // Send base64 data
+                body: formData,
             });
 
             const result = await response.json();
 
             if (result.status === "Yes") {
-                onSave(signatureData); // Save if verified
+                onSave();
                 alert("Signature verified successfully!");
             } else {
                 alert("Signature verification failed. Try again!");

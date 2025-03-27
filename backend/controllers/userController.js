@@ -10,38 +10,42 @@ const generateToken = (id) => {
 
 // @desc    Register a new user
 // @route   POST /api/auth/register
+// Register User Controller
 exports.registerUser = async (req, res) => {
     try {
-        const { fullName, email, password, signature, photo } = req.body;
-
-        // Check if user already exists
-        const userExists = await User.findOne({ email });
-        if (userExists) {
-            return res.status(400).json({ message: 'User already exists' });
-        }
-
-        // Create new user
-        const user = await User.create({
-            fullName,
-            email,
-            password,
-            signature,
-            photo
-        });
-
-        // Generate token
-        const token = generateToken(user._id);
-
-        res.status(201).json({
-            _id: user._id,
-            fullName: user.fullName,
-            email: user.email,
-            token
-        });
+      const { fullName, email, password } = req.body;
+  
+      // Use safe checks in case req.files is undefined
+      const photoPath =
+        req.files && req.files.photo
+          ? `uploads/${req.files.photo[0].filename}`
+          : null;
+      const signaturePath =
+        req.files && req.files.signature
+          ? `uploads/${req.files.signature[0].filename}`
+          : null;
+  
+      // Create the user with file paths
+      const user = await User.create({
+        fullName,
+        email,
+        password,
+        photo: photoPath,
+        signature: signaturePath,
+      });
+  
+      res
+        .status(201)
+        .json({ message: "User created successfully", user });
     } catch (error) {
-        res.status(400).json({ message: error.message });
+      console.error("Error in registerUser:", error);
+      res.status(500).json({ message: error.message });
     }
-};
+  };
+
+// module.exports = { registerUser };
+
+
 
 // @desc    Authenticate user
 // @route   POST /api/auth/login

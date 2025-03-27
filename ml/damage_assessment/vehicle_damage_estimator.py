@@ -32,25 +32,23 @@ class VehicleDamageEstimator:
         }
 
     def detect_damage(self, image_path):
-        """
-        Detect vehicle damage using YOLO model
-        
-        :param image_path: Path to the input image
-        :return: Dictionary of detected damage parts and their counts
-        """
-        # Perform object detection
-        result = self.model(image_path)
-        detected_objects = result[0].boxes
-        
-        # Count detected parts
-        class_ids = [box.cls.item() for box in detected_objects]
-        class_counts = Counter(class_ids)
-        
-        # Save detected image
-        detected_image_path = os.path.join('static', 'detected_image.jpg')
-        result[0].save(detected_image_path)
-        
-        return class_counts
+        try:
+            # Perform object detection
+            result = self.model(image_path)
+            detected_objects = result[0].boxes
+            
+            # Count detected parts
+            class_ids = [box.cls.item() for box in detected_objects]
+            class_counts = Counter(class_ids)
+            
+            # Save detected image
+            detected_image_path = os.path.join('static', 'detected_image.jpg')
+            result[0].save(detected_image_path)
+            
+            return class_counts
+        except Exception as e:
+            print(f"Detection error: {str(e)}")
+            raise RuntimeError("Failed to process image with YOLO model") from e
 
     def get_part_prices(self, car_brand, car_model, class_counts):
         prices = {}

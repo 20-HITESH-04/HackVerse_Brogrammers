@@ -41,7 +41,7 @@ export default function AdminSignup() {
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/api/admin/register', {
+      const response = await axios.post('http://localhost:3001/api/admin/register', {
         fullName: formData.fullName,
         email: formData.email,
         password: formData.password,
