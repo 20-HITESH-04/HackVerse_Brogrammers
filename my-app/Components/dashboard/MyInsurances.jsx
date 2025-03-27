@@ -38,7 +38,7 @@ export function MyInsurances() {
 
   const handleClaimClick = (insuranceType) => {
     const formattedType = insuranceType.toLowerCase().replace(/\s+/g, "-"); // Converts to "car-insurance", "home-insurance"
-    router.push(`/user/${formattedType}/claimInsurance`);
+    router.push(`/user/${formattedType}`);
   };
 
   return (

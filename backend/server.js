@@ -17,6 +17,7 @@ app.use(express.json());
 // Routes
 app.use('/api/user', require('./routes/userRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes')); // Add admin routes
+app.use('api/damage-analysis', require('./routes/analysisRoutes')); // Add damage analysis routes
 
 // Error Handling for Undefined Routes
 app.use((req, res, next) => {
@@ -29,7 +30,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Internal Server Error' });
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
