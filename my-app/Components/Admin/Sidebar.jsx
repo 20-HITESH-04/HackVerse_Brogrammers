@@ -1,49 +1,51 @@
-"use client";
+// src/components/admin/Sidebar.jsx
+'use client';
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Home, UserPlus, LogOut } from "lucide-react";
+import React from 'react';
+import Link from 'next/link';
+import {
+    LayoutDashboard,
+    FileText,
+    CreditCard,
+    Shield,
+    UserPlus,
+    User
 
-const Sidebar = () => {
-  const pathname = usePathname();
+} from 'lucide-react';
 
-  const menuItems = [
-    { name: "Dashboard", href: "/", icon: <Home size={20} /> },
-    { name: "Add User", href: "/add-user", icon: <UserPlus size={20} /> },
-  ];
+const SIDEBAR_ITEMS = [
+    {
+        icon: LayoutDashboard,
+        text: 'Dashboard',
+        href: '/admin'
+    },
+    {
+        icon: UserPlus,
+        text: 'Add User',
+        href: '/admin/adduser'
+    },
 
-  return (
-    <div className="w-64 h-screen bg-white shadow-md fixed flex flex-col">
-      {/* Company Logo */}
-      <div className="p-6 border-b">
-        <h2 className="text-2xl font-bold text-green-700">Admin Panel</h2>
-      </div>
 
-      {/* Sidebar Menu */}
-      <nav className="flex-1 p-4 space-y-2">
-        {menuItems.map((item) => (
-          <Link key={item.name} href={item.href}>
-            <div
-              className={`flex items-center gap-3 px-4 py-3 rounded-md cursor-pointer transition-all ${
-                pathname === item.href ? "bg-green-100 text-green-700 font-semibold" : "text-gray-700 hover:bg-gray-100"
-              }`}
-            >
-              {item.icon}
-              {item.name}
-            </div>
-          </Link>
-        ))}
-      </nav>
+];
 
-      {/* Logout Button */}
-      <div className="p-4">
-        <button className="flex items-center gap-2 px-4 py-2 w-full text-red-600 font-semibold rounded-md hover:bg-red-100">
-          <LogOut size={20} />
-          Log Out
-        </button>
-      </div>
-    </div>
-  );
-};
-
-export default Sidebar;
+export function Sidebar() {
+    return (
+        <div className="w-64 bg-white shadow-md flex flex-col">
+            <nav className="flex-grow pt-5">
+                <ul>
+                    {SIDEBAR_ITEMS.map((item) => (
+                        <li key={item.text} className="px-5">
+                            <Link
+                                href={item.href}
+                                className="flex items-center py-3 px-3 hover:bg-blue-50 rounded text-gray-700 transition"
+                            >
+                                <item.icon className="mr-3" size={20} />
+                                <span>{item.text}</span>
+                            </Link>
+                        </li>
+                    ))}
+                </ul>
+            </nav>
+        </div>
+    );
+}

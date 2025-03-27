@@ -1,12 +1,28 @@
-const Navbar = () => {
+'use client';
+
+import React from 'react';
+import { Bell, User, Settings } from 'lucide-react';
+import { Button } from '../ui/button';
+import Image from 'next/image';
+
+export function Navbar() {
     return (
-      <div className="fixed top-0 left-64 right-0 bg-white shadow-md p-4 flex items-center justify-between">
-        <h1 className="text-lg font-semibold text-green-700">Admin Dashboard</h1>
-        <div className="flex items-center gap-4">
-          <span className="text-gray-600">Admin</span>
-        </div>
-      </div>
+        <nav className="fixed top-0 left-0 right-0 bg-white shadow-md z-50 px-4 py-3 flex justify-between items-center">
+            <div className="flex items-center space-x-4">
+                <Image src="/tez_claim_logo.png" alt="TezClaim Logo" width={40} height={40} />
+                <h1 className="text-xl font-bold text-blue-600">TezClaim</h1>
+            </div>
+            <div className="flex items-center space-x-4">
+                <Button variant="ghost" size="icon">
+                    <Bell className="h-5 w-5" />
+                </Button>
+                <Button variant="ghost" size="icon">
+                    <Settings className="h-5 w-5" />
+                </Button>
+                <Button variant="ghost" size="icon">
+                    <User className="h-5 w-5" />
+                </Button>
+            </div>
+        </nav>
     );
-  };
-  
-  export default Navbar;  
+}

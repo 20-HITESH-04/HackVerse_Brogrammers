@@ -11,9 +11,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { useRouter } from 'next/navigation';
 
-const router = useRouter();
 
 export default function AdminSignup() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -50,8 +50,8 @@ export default function AdminSignup() {
       console.log('Admin Signup Success:', response.data);
       alert('Signup successful! Please log in.');
 
-         // Redirect to admin home on successful login
-    router.push('/admin/home');
+      // Redirect to admin home on successful login
+      router.push('/admin/home');
     } catch (error) {
       console.error('Signup Error:', error.response?.data || error.message);
       alert(error.response?.data?.message || 'Signup failed. Please try again.');
