@@ -24,7 +24,7 @@ export default function UserSignin() {
     e.preventDefault();
     setError('');
     try {
-      const response = await axios.post('http://localhost:5000/api/user/login', formData);
+      const response = await axios.post('http://localhost:3001/api/user/login', formData);
       console.log('User Signin Success:', response.data);
 
       // Store user data (e.g., token, ID) in local storage or state

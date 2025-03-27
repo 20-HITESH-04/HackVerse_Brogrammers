@@ -25,7 +25,7 @@ export default function AdminSignin() {
     e.preventDefault();
     setError('');
     try {
-      const response = await axios.post('http://localhost:5000/api/admin/login', formData);
+      const response = await axios.post('http://localhost:3001/api/admin/login', formData);
       console.log('Admin Signin Success:', response.data);
       // Handle success (e.g., store token, redirect)
       // Redirect to admin home on successful login
