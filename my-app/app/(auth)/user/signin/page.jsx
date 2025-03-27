@@ -10,31 +10,32 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
-const router = useRouter();
-
-const handleSignin = async (e) => {
-  e.preventDefault();
-  setError('');
-  try {
-    const response = await axios.post('http://localhost:5000/api/user/login', formData);
-    console.log('User Signin Success:', response.data);
-
-    // Redirect to admin home on successful login
-    router.push('/user/home');
-  } catch (err) {
-    console.error('Signin Error:', err.response?.data || err.message);
-    setError(err.response?.data?.message || 'Signin failed. Please try again.');
-  }
-};
-
-
 export default function UserSignin() {
+  const router = useRouter(); // Move useRouter inside the component
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({ ...prevState, [name]: value }));
+  };
+
+  const handleSignin = async (e) => {
+    e.preventDefault();
+    setError('');
+    try {
+      const response = await axios.post('http://localhost:5000/api/user/login', formData);
+      console.log('User Signin Success:', response.data);
+
+      // Store user data (e.g., token, ID) in local storage or state
+      localStorage.setItem('user', JSON.stringify(response.data));
+
+      // Redirect to user home on successful login
+      router.push('/user/home');
+    } catch (err) {
+      console.error('Signin Error:', err.response?.data || err.message);
+      setError(err.response?.data?.message || 'Signin failed. Please try again.');
+    }
   };
 
   return (
@@ -95,15 +96,12 @@ export default function UserSignin() {
               </Button>
             </form>
           </CardContent>
-          {/* 
-          <p className="text-center text-sm text-gray-600 mt-4 pb-4">
-            Don't have an account? <Link href="/signup" className="text-blue-600 hover:underline">Sign up</Link>
-          </p> */}
         </Card>
       </div>
     </div>
   );
 }
+
 
 
 
