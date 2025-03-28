@@ -6,7 +6,20 @@ TezClaim is an advanced AI-powered solution designed to enhance security and eff
 
 ## How to Run
 
-[Instructions to be added]
+### Run Frontend
+- cd my-app
+- npm install
+- npm run dev
+### Run Backend
+- cd backend
+- npm install
+- create file .env and add MONGO_URI JWT_SECRET PORT OPENCAGE_API_KEY
+- npm start
+  ### Run ML models
+- cd ml/<model_name>
+- install dependecies
+- run the flask api file
+
 
 ## Project Structure
 ```
