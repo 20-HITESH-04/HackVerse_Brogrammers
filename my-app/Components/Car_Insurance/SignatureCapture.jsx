@@ -41,7 +41,7 @@ export default function SignatureUpload({ onSave }) {
             console.log("API Response:", result); // ✅ Debugging response
 
             if (result.match) { // ✅ Correct condition
-                onSave();
+                // onSave();
                 alert(`✅ Success: ${result.message} (Score: ${result.similarity_score})`);
             } else {
                 alert(`❌ Failed: ${result.message} (Score: ${result.similarity_score})`);
