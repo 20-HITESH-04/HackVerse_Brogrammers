@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import axios from 'axios';
-
 import { useRouter } from 'next/navigation';
 
 export default function AdminSignin() {
@@ -27,7 +26,10 @@ export default function AdminSignin() {
     try {
       const response = await axios.post('http://localhost:3001/api/admin/login', formData);
       console.log('Admin Signin Success:', response.data);
-      // Handle success (e.g., store token, redirect)
+
+      localStorage.setItem("_id", response.data._id);
+      localStorage.setItem("token", response.data.token);
+
       // Redirect to admin home on successful login
       router.push('/admin/home');
     } catch (err) {
@@ -37,7 +39,7 @@ export default function AdminSignin() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-100 to-green-300 relative">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-blue-300 relative">
       <div className="absolute inset-0 bg-white/30 backdrop-blur-md rounded-lg shadow-xl p-6 flex items-center justify-center">
         <Card className="w-full max-w-md bg-white shadow-lg rounded-xl overflow-hidden border border-gray-200">
           <CardHeader className="text-center pb-4">
@@ -48,9 +50,7 @@ export default function AdminSignin() {
               height={120}
               className="mx-auto mb-4"
             />
-            <CardTitle className="text-2xl font-bold text-gray-800 flex items-center justify-center gap-2">
-              <ShieldCheck className="text-green-600" size={28} /> Admin Login
-            </CardTitle>
+            <CardTitle className="text-2xl font-bold text-gray-800">Admin Login</CardTitle>
             <p className="text-gray-500 mt-1 text-sm">Secure Access to Admin Panel</p>
           </CardHeader>
 
@@ -69,7 +69,7 @@ export default function AdminSignin() {
                     value={formData.email}
                     onChange={handleInputChange}
                     placeholder="Enter admin email"
-                    className="pl-10 bg-gray-100 focus:ring-green-500 focus:border-green-500"
+                    className="pl-10 bg-gray-100 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
               </div>
@@ -86,26 +86,30 @@ export default function AdminSignin() {
                     value={formData.password}
                     onChange={handleInputChange}
                     placeholder="Enter admin password"
-                    className="pl-10 bg-gray-100 focus:ring-green-500 focus:border-green-500"
+                    className="pl-10 bg-gray-100 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
               </div>
 
-              <Button type="submit" className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg shadow-md transition-all">
+              <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg shadow-md transition-all">
                 Sign In
               </Button>
             </form>
-          </CardContent>
 
-          <p className="text-center text-sm text-gray-600 mt-4 pb-4">
-            Don't have an account? <Link href="/admin/signup" className="text-green-600 hover:underline">Sign up</Link>
-          </p>
+            <div className="text-center text-sm text-gray-600 mt-4 pb-4 space-y-2">
+              <p>
+                Don't have an account? <Link href="/admin/signup" className="text-blue-600 hover:underline">Sign up</Link>
+              </p>
+              <p>
+                Are you a user? <Link href="/user/signin" className="text-blue-600 hover:underline">Applicant Login</Link>
+              </p>
+            </div>
+          </CardContent>
         </Card>
       </div>
     </div>
   );
 }
-
 
 
 // 'use client';

@@ -54,8 +54,8 @@ const ChatPage = () => {
         <main className="md:ml-64 mt-16 flex flex-col w-full h-[calc(100vh-4rem)] relative">
           {/* Chat Messages Area */}
           <div className="flex-grow overflow-y-auto p-6 space-y-4 bg-white shadow-inner">
-            <div className="text-center text-blue-500 py-2 text-sm italic">
-              Enter how you are feeling? Describe symptoms in detail for accurate help.
+            <div className="text-center text-blue-500 py-2 text-lg italic">
+              Hi! I am Tezi. TezClaim's personalized insurance assistant. How can I help you today?
             </div>
             {messages.map((msg, index) => (
               <div key={index} className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}>
