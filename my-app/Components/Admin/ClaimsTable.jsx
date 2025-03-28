@@ -5,16 +5,79 @@ import React from 'react';
 
 const MOCK_CLAIMS = [
     {
-        id: 'CLM001',
-        type: 'Car Insurance',
-        customerName: 'John Doe',
-        amount: 5000,
-        status: 'Pending',
-        urgency: 'High',
-        date: new Date()
+        "id": "CLM001",
+        "type": "Car Insurance",
+        "customerName": "John Doe",
+        "amount": 5000,
+        "status": "Pending",
+        "urgency": "Moderate",
+        "date": "2025-03-28"
     },
-    // Add more mock claims...
-];
+    {
+        "id": "CLM002",
+        "type": "Health Insurance",
+        "customerName": "Jane Smith",
+        "amount": 3000,
+        "status": "Accepted",
+        "urgency": "Low",
+        "date": "2025-03-27"
+    },
+    {
+        "id": "CLM003",
+        "type": "Home Insurance",
+        "customerName": "Alice Brown",
+        "amount": 8000,
+        "status": "Rejected",
+        "urgency": "High",
+        "date": "2025-03-26"
+    },
+    {
+        "id": "CLM004",
+        "type": "Car Insurance",
+        "customerName": "Bob Wilson",
+        "amount": 2500,
+        "status": "Pending",
+        "urgency": "Low",
+        "date": "2025-03-25"
+    },
+    {
+        "id": "CLM005",
+        "type": "Health Insurance",
+        "customerName": "Emma Johnson",
+        "amount": 10000,
+        "status": "Accepted",
+        "urgency": "High",
+        "date": "2025-03-24"
+    },
+    {
+        "id": "CLM006",
+        "type": "Home Insurance",
+        "customerName": "David Lee",
+        "amount": 4500,
+        "status": "Pending",
+        "urgency": "Moderate",
+        "date": "2025-03-28"
+    },
+    {
+        "id": "CLM007",
+        "type": "Car Insurance",
+        "customerName": "Sophia Martinez",
+        "amount": 9000,
+        "status": "Rejected",
+        "urgency": "High",
+        "date": "2025-03-27"
+    },
+    {
+        "id": "CLM008",
+        "type": "Health Insurance",
+        "customerName": "Michael Chen",
+        "amount": 3500,
+        "status": "Accepted",
+        "urgency": "Low",
+        "date": "2025-03-26"
+    }
+]
+    ;
 
 const getStatusColor = (status) => {
     switch (status) {
@@ -48,7 +111,7 @@ export function ClaimsTable() {
                             <td className="p-3">{claim.id}</td>
                             <td className="p-3">{claim.type}</td>
                             <td className="p-3">{claim.customerName}</td>
-                            <td className="p-3">${claim.amount}</td>
+                            <td className="p-3">₹{claim.amount * 85}</td>
                             <td className="p-3">
                                 <span className={`px-2 py-1 rounded ${getStatusColor(claim.status)}`}>
                                     {claim.status}

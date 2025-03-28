@@ -5,17 +5,17 @@ export function DashboardMetrics() {
     const metrics = [
         {
             title: 'Claims (24h)',
-            value: '15',
+            value: '264',
             icon: '📋'
         },
         {
             title: 'Avg. Processing Time',
-            value: '3.5 days',
+            value: '3h 23m',
             icon: '⏱️'
         },
         {
             title: 'Total Claim Value',
-            value: '$250,000',
+            value: '₹2355300',
             icon: '💰'
         }
     ];
