@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
+const createPolicyClaimRoutes = require('./policyClaimRoutes');
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ app.use('/api/user', require('./routes/userRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes')); // Add admin routes
 app.use('/api/damage-analysis', require('./routes/analysisRoutes')); // Add damage analysis routes
 app.use("/api/signature", require("./routes/signatureRoutes"));
+app.use('/api/location', createPolicyClaimRoutes(process.env.OPENCAGE_API_KEY));
 
 // Error Handling for Undefined Routes
 app.use((req, res, next) => {
