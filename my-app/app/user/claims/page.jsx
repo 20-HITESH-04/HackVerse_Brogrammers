@@ -6,10 +6,10 @@ import { Sidebar } from '../../../Components/user/Sidebar';
 
 const MOCK_CLAIMS = [
     { id: 'CLM001', date: '2025-03-28', type: 'Car Insurance', customerName: 'John Doe', amount: 5000, status: 'Pending', urgency: 'High' },
-    { id: 'CLM002', date: '2025-03-27', type: 'Health Insurance', customerName: 'Jane Smith', amount: 3000, status: 'Accepted', urgency: 'Medium' },
-    { id: 'CLM003', date: '2025-03-26', type: 'Home Insurance', customerName: 'Alice Brown', amount: 7000, status: 'Rejected', urgency: 'Low' },
-    { id: 'CLM004', date: '2025-03-25', type: 'Travel Insurance', customerName: 'Bob Wilson', amount: 2500, status: 'Pending', urgency: 'High' },
-    { id: 'CLM005', date: '2025-03-24', type: 'Life Insurance', customerName: 'Emma Johnson', amount: 10000, status: 'Accepted', urgency: 'Medium' }
+    { id: 'CLM002', date: '2025-01-27', type: 'Health Insurance', customerName: 'Jane Smith', amount: 3000, status: 'Accepted', urgency: 'Medium' },
+    { id: 'CLM003', date: '2024-09-03', type: 'Home Insurance', customerName: 'Alice Brown', amount: 7000, status: 'Rejected', urgency: 'Low' },
+    { id: 'CLM004', date: '2024-03-25', type: 'Travel Insurance', customerName: 'Bob Wilson', amount: 2500, status: 'Pending', urgency: 'High' },
+    { id: 'CLM005', date: '2021-01-18', type: 'Life Insurance', customerName: 'Emma Johnson', amount: 10000, status: 'Accepted', urgency: 'Medium' }
 ];
 
 const getStatusColor = (status) => {
