@@ -1,15 +1,20 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import CarDamageAnalysisResults from "./CarDamageAnalysisResults";
 
 const CarUploadForm = () => {
-  const [carBrand, setCarBrand] = useState(""); 
+  const [carBrand, setCarBrand] = useState("");
   const [carModel, setCarModel] = useState("");
   const [files, setFiles] = useState([]);
   const [userId, setUserId] = useState("");
   const [token, setToken] = useState("");
+  const [analysisResult, setAnalysisResult] = useState(null);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    setIsClient(true);
+    // Ensure this only runs on the client-side
     if (typeof window !== 'undefined') {
       const storedUserId = localStorage.getItem("_id") || "";
       const storedToken = localStorage.getItem("token") || "";
@@ -23,24 +28,24 @@ const CarUploadForm = () => {
     const selectedFiles = Array.from(event.target.files);
     setFiles(selectedFiles);
   };
-  
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     if (!userId || !carBrand.trim() || !carModel.trim() || files.length === 0) {
       alert("Please fill in all details.");
       return;
     }
-  
+
     const formData = new FormData();
     formData.append("userId", userId);
     formData.append("carBrand", carBrand);
     formData.append("carModel", carModel);
-    
-    files.forEach((file, index) => {
-      formData.append("images", file);  // Note: changed from 'image' to 'images'
+
+    files.forEach((file) => {
+      formData.append("images", file);
     });
-  
+
     try {
       const response = await fetch("http://localhost:3001/api/damage-analysis/analyze", {
         method: "POST",
@@ -49,12 +54,13 @@ const CarUploadForm = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-  
+
       const result = await response.json();
       console.log("Car Analysis Response:", result);
-  
+
       if (response.ok) {
         alert("Car analyzed successfully!");
+        setAnalysisResult(result);
       } else {
         alert(result.message || "Failed to analyze car.");
       }
@@ -63,53 +69,68 @@ const CarUploadForm = () => {
       alert("Something went wrong!");
     }
   };
-  
+
+  // Prevent server-side rendering
+  if (!isClient) return null;
+
   return (
-    <div style={{
-      maxWidth: "400px",
-      margin: "auto",
-      padding: "20px",
-      border: "1px solid #ccc",
-      borderRadius: "8px",
-      boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
-      textAlign: "center"
-    }}>
-      <h2>Analyze Your Car</h2>
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column" }}>
-        <input
-          type="text"
-          placeholder="Car Brand"
-          value={carBrand}
-          onChange={(e) => setCarBrand(e.target.value)}
-          style={{ padding: "10px", margin: "10px 0", borderRadius: "4px", border: "1px solid #ccc" }}
-        />
-        <input
-          type="text"
-          placeholder="Car Model"
-          value={carModel}
-          onChange={(e) => setCarModel(e.target.value)}
-          style={{ padding: "10px", margin: "10px 0", borderRadius: "4px", border: "1px solid #ccc" }}
-        />
-        <input
-          type="file"
-          multiple
-          onChange={handleFileChange}
-          style={{ margin: "10px 0" }}
-        />
-        <button
-          type="submit"
-          style={{
-            padding: "10px",
-            backgroundColor: "#007bff",
-            color: "#fff",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer"
-          }}
+    <div className="max-w-md mx-auto">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <h2 className="text-2xl font-bold mb-4 text-center">Analyze Your Car</h2>
+        
+        <div>
+          <label htmlFor="carBrand" className="block mb-2 font-medium">Car Brand</label>
+          <input
+            id="carBrand"
+            type="text"
+            value={carBrand}
+            onChange={(e) => setCarBrand(e.target.value)}
+            placeholder="Enter car brand"
+            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+        </div>
+        
+        <div>
+          <label htmlFor="carModel" className="block mb-2 font-medium">Car Model</label>
+          <input
+            id="carModel"
+            type="text"
+            value={carModel}
+            onChange={(e) => setCarModel(e.target.value)}
+            placeholder="Enter car model"
+            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+        </div>
+        
+        <div>
+          <label htmlFor="damageImages" className="block mb-2 font-medium">Upload Damage Images</label>
+          <input
+            id="damageImages"
+            type="file"
+            multiple
+            onChange={handleFileChange}
+            accept="image/*"
+            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+        </div>
+        
+        <button 
+          type="submit" 
+          className="w-full bg-blue-500 text-white py-3 rounded-md hover:bg-blue-600 transition-colors"
         >
           Analyze Car
         </button>
       </form>
+
+      {/* Conditionally render analysis results */}
+      {analysisResult && (
+        <div className="mt-8">
+          <CarDamageAnalysisResults analysisData={analysisResult} />
+        </div>
+      )}
     </div>
   );
 };
