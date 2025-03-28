@@ -11,25 +11,28 @@ const INSURANCE_TYPES = [
     id: 1,
     type: "Car Insurance",
     Icon: CarFront,
-    coverage: "$50,000",
-    premium: "$150/month",
-    validUntil: "Dec 31, 2024",
+    coverage: "₹ 200,000",
+    premium: "₹ 583/month",
+    validUntil: "Dec 31, 2028",
+    policygiver: "Acko",
   },
   {
     id: 2,
     type: "Home Insurance",
     Icon: Home,
-    coverage: "$250,000",
-    premium: "$200/month",
-    validUntil: "Jun 30, 2024",
+    coverage: "₹ 500,000",
+    premium: "₹ 243/month",
+    validUntil: "Jun 30, 2036",
+    policygiver: "Niva Bupa",
   },
   {
     id: 3,
     type: "Health Insurance",
     Icon: HeartPulse,
-    coverage: "$100,000",
-    premium: "$300/month",
-    validUntil: "Sep 15, 2024",
+    coverage: "₹ 1,500,000",
+    premium: "₹ 835/month",
+    validUntil: "Sep 20, 2028",
+    policygiver: "HDFC ERGO",
   },
 ];
 
@@ -63,10 +66,18 @@ export function MyInsurances() {
                   <p className="text-xs text-gray-500">Premium</p>
                   <p className="font-bold text-gray-900">{insurance.premium}</p>
                 </div>
-                <div className="col-span-2">
+                <div>
                   <p className="text-xs text-gray-500">Valid Until</p>
                   <p className="font-bold text-gray-900">{insurance.validUntil}</p>
                 </div>
+                <div>
+                  <p className="text-xs text-gray-500"></p>
+                  <p className="font-bold text-gray-900">{insurance.policygiver}</p>
+                </div>
+                {/* <div className="col-span-2">
+                  <p className="text-xs text-gray-500">Valid Until</p>
+                  <p className="font-bold text-gray-900">{insurance.validUntil}</p>
+                </div> */}
               </div>
               <div className="mt-4 flex space-x-3">
                 <Button variant="outline" className="flex-1 py-2 text-sm font-semibold border-gray-300 hover:bg-gray-100">

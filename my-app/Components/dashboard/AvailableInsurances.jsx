@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
@@ -9,32 +11,40 @@ const AVAILABLE_INSURANCES = [
         type: 'Travel Insurance',
         icon: Plane,
         description: 'Comprehensive coverage for international trips',
-        startingFrom: '$50/month'
+        startingFrom: '₹ 30/day',
+        externalLink: 'https://www.policybazaar.com/travel-insurance/'
     },
     {
         id: 2,
         type: 'Marine Insurance',
         icon: Ship,
         description: 'Protection for boats and marine vessels',
-        startingFrom: '$100/month'
+        startingFrom: '₹ 500/month',
+        externalLink: 'https://www.iffcotokio.co.in/marine-insurance'
     },
     {
         id: 3,
         type: 'Motorcycle Insurance',
         icon: Bike,
         description: 'Complete coverage for two-wheelers',
-        startingFrom: '$75/month'
+        startingFrom: '₹ 299/month',
+        externalLink: 'https://www.acko.com/bike-insurance/'
     },
     {
         id: 4,
         type: 'Commercial Insurance',
         icon: Building2,
         description: 'Insurance for business and commercial properties',
-        startingFrom: '$250/month'
+        startingFrom: '₹ 999/month',
+        externalLink: 'https://www.hdfcergo.com/business-insurance'
     }
 ];
 
 export function AvailableInsurances() {
+    const handleMoreInfo = (link) => {
+        window.open(link, '_blank', 'noopener,noreferrer');
+    };
+
     return (
         <section className="mt-8">
             <h2 className="text-2xl font-bold mb-4">Available Insurances</h2>
@@ -55,7 +65,12 @@ export function AvailableInsurances() {
                                 <span className="text-lg font-bold text-blue-600">
                                     {insurance.startingFrom}
                                 </span>
-                                <Button variant="outline">More Info</Button>
+                                <Button
+                                    variant="outline"
+                                    onClick={() => handleMoreInfo(insurance.externalLink)}
+                                >
+                                    More Info
+                                </Button>
                             </div>
                         </CardContent>
                     </Card>
